@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ethers } from 'ethers';
+import { BigNumber, ethers, Wallet } from 'ethers';
 import {
   AppService,
   CreatePaymentDTO,
@@ -46,17 +46,27 @@ export class AppController {
   }
 
   @Post('request-payment')
-  requestPayment(@Body() { id, secret, receiver }: RequestPaymentDTO): Promise<any> {
-    return this.appService.requestPaymentOrder(id, secret, receiver);
+  // requestPayment(@Body() { id, secret, receiver }: RequestPaymentDTO): Promise<any> {
+  requestPayment(@Body() { id }: RequestPaymentDTO): Promise<any> {
+    // return this.appService.requestPaymentOrder(id, secret, receiver);
+    return this.appService.requestPaymentOrder(id);
   }
 
   @Get('token-address')
   getTokenAddress() {
-    return {result: this.appService.getTokenAddress()};
+    return { result: this.appService.getTokenAddress() };
+  }
+
+  @Post('delegate-voter')
+  async delegateVoter(@Body() { wallet, signer}: { wallet: any, signer: any }) {
+    console.log("uifhoihe2w", JSON.stringify(wallet))
+    return { result: await this.appService.delegateVoter(wallet, signer) };
   }
 
   @Post('request-tokens')
-  requestTokens(){
-    return {result: this.appService.requestTokens()};
+  async requestTokens(
+    @Body() { address, tokens }: { address: string; tokens: BigNumber },
+  ) {
+    return { result: await this.appService.requestTokens(address, tokens) };
   }
 }
