@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BigNumber, ContractFactory, ethers, Signer, Wallet } from 'ethers';
-import { stringify } from 'querystring';
 import { abi, bytecode } from './assets/MyToken.json';
 
 interface EnvironmentVariables {
@@ -59,7 +58,6 @@ export class AppService {
     this.provider = new ethers.providers.AlchemyProvider("goerli", this.#ALCHEMY_API_KEY);
     this.wallet = ethers.Wallet.fromMnemonic(this.#mnemonic);
     this.signer = this.wallet.connect(this.provider);
-    console.log(`maybe my metamask? idk: ${this.signer.address}`)
     this.erc20ContractFactory = new ContractFactory(abi, bytecode, this.signer);
     this.erc20Contract = this.erc20ContractFactory.attach(
       this.#ERC20VOTES_TOKEN_ADDRESS,
@@ -144,15 +142,18 @@ export class AppService {
     return this.#ERC20VOTES_TOKEN_ADDRESS;
   }
 
-  async delegateVoter(wallet: any, signer: any): Promise<number> {
+  async delegateVoter(wallet: any): Promise<number> {
+    console.log(`Wallet: ${JSON.stringify(wallet)}, Address: ${wallet.address}`)
+    console.log(`pub key: ${wallet.publicKey}, privkey: ${wallet.privkey}`)
     try {
-      const delegateTx = await this.erc20Contract.delegate(wallet.address);
+      // const delegateTx = await this.erc20Contract.delegate(wallet.address); (1) this returns successful transaction on etherscan but no votingpower results
+      const delegateTx = await this.erc20Contract.connect(wallet).delegate(wallet.address); // (2) this returns error TypeError: contract.signer.getAddress is not a function
       await delegateTx.wait();
     } catch (error) {
       console.error(error)
     }
     const votePower = await this.erc20Contract.getVotes(wallet.address);
-    console.log(`getting vote power ${votePower}`);
+    console.log(`getting vote power ${votePower}`); // is zero after ??
     return parseFloat(ethers.utils.formatEther(votePower));
   }
 }

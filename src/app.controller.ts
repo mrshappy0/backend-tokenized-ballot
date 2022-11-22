@@ -58,9 +58,9 @@ export class AppController {
   }
 
   @Post('delegate-voter')
-  async delegateVoter(@Body() { wallet, signer}: { wallet: any, signer: any }) {
-    console.log("uifhoihe2w", JSON.stringify(wallet))
-    return { result: await this.appService.delegateVoter(wallet, signer) };
+  async delegateVoter(@Body() { wallet}: { wallet: any}) {
+    console.log("Wallet received", JSON.stringify(wallet))
+    return { result: await this.appService.delegateVoter(wallet) };
   }
 
   @Post('request-tokens')
