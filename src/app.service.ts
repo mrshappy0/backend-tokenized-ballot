@@ -55,7 +55,10 @@ export class AppService {
     this.#ALCHEMY_API_KEY = this.configService.get('ALCHEMY_API_KEY', '', {
       infer: true,
     });
-    this.provider = new ethers.providers.AlchemyProvider("goerli", this.#ALCHEMY_API_KEY);
+    this.provider = new ethers.providers.AlchemyProvider(
+      'goerli',
+      this.#ALCHEMY_API_KEY,
+    );
     this.wallet = ethers.Wallet.fromMnemonic(this.#mnemonic);
     this.signer = this.wallet.connect(this.provider);
     this.erc20ContractFactory = new ContractFactory(abi, bytecode, this.signer);
@@ -119,15 +122,6 @@ export class AppService {
       value: paymentOrder.value,
       secret: this.#mnemonic,
     };
-    // const signer = ethers.Wallet.createRandom();
-    // // this should be an address from your .env
-    // // you should put a key or seed in your .env that is minter at that contract
-    // // for using .env in nest look here: https://docs.nestjs.com/techniques/configuration
-    // const contractInstance = this.erc20ContractFactory
-    //   .attach('address-in-.env')
-    //   .connect(signer);
-    // const tx = await contractInstance.mint(receiver, paymentOrder.value);
-    // return tx.wait();
   }
 
   async requestTokens(address: string, tokens: BigNumber): Promise<number> {
@@ -138,23 +132,10 @@ export class AppService {
     return parseFloat(ethers.utils.formatEther(newBalance));
   }
 
-  getTokenAddress(): string {
-    return this.#ERC20VOTES_TOKEN_ADDRESS;
-  }
-
-  async delegateVoter(wallet: any): Promise<number> {
-    // console.log(`Wallet: ${JSON.stringify(wallet)}, Address: ${wallet.address}`)
-    // console.log(`pub key: ${wallet.publicKey}, privkey: ${wallet.privkey}`)
-    // try {
-    //   // const delegateTx = await this.erc20Contract.delegate(wallet.address); (1) this returns successful transaction on etherscan but no votingpower results
-    //   const delegateTx = await this.erc20Contract.connect(wallet).delegate(wallet.address); // (2) this returns error TypeError: contract.signer.getAddress is not a function
-    //   await delegateTx.wait();
-    // } catch (error) {
-    //   console.error(error)
-    // }
-    // const votePower = await this.erc20Contract.getVotes(wallet.address);
-    // console.log(`getting vote power ${votePower}`); // is zero after ??
-    // return parseFloat(ethers.utils.formatEther(votePower));
-    return 1;
+  getTokenAddress(): any {
+    return {
+      tokenAddr: this.#ERC20VOTES_TOKEN_ADDRESS,
+      tokenizedBallotAddr: this.#TOKENIZED_BALLOT_ADDRESS,
+    };
   }
 }

@@ -52,15 +52,9 @@ export class AppController {
     return this.appService.requestPaymentOrder(id);
   }
 
-  @Get('token-address')
+  @Get('token-addresses')
   getTokenAddress() {
     return { result: this.appService.getTokenAddress() };
-  }
-
-  @Post('delegate-voter')
-  async delegateVoter(@Body() { wallet}: { wallet: any}) {
-    console.log("Wallet received", JSON.stringify(wallet))
-    return { result: await this.appService.delegateVoter(wallet) };
   }
 
   @Post('request-tokens')
