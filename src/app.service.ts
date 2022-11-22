@@ -143,17 +143,18 @@ export class AppService {
   }
 
   async delegateVoter(wallet: any): Promise<number> {
-    console.log(`Wallet: ${JSON.stringify(wallet)}, Address: ${wallet.address}`)
-    console.log(`pub key: ${wallet.publicKey}, privkey: ${wallet.privkey}`)
-    try {
-      // const delegateTx = await this.erc20Contract.delegate(wallet.address); (1) this returns successful transaction on etherscan but no votingpower results
-      const delegateTx = await this.erc20Contract.connect(wallet).delegate(wallet.address); // (2) this returns error TypeError: contract.signer.getAddress is not a function
-      await delegateTx.wait();
-    } catch (error) {
-      console.error(error)
-    }
-    const votePower = await this.erc20Contract.getVotes(wallet.address);
-    console.log(`getting vote power ${votePower}`); // is zero after ??
-    return parseFloat(ethers.utils.formatEther(votePower));
+    // console.log(`Wallet: ${JSON.stringify(wallet)}, Address: ${wallet.address}`)
+    // console.log(`pub key: ${wallet.publicKey}, privkey: ${wallet.privkey}`)
+    // try {
+    //   // const delegateTx = await this.erc20Contract.delegate(wallet.address); (1) this returns successful transaction on etherscan but no votingpower results
+    //   const delegateTx = await this.erc20Contract.connect(wallet).delegate(wallet.address); // (2) this returns error TypeError: contract.signer.getAddress is not a function
+    //   await delegateTx.wait();
+    // } catch (error) {
+    //   console.error(error)
+    // }
+    // const votePower = await this.erc20Contract.getVotes(wallet.address);
+    // console.log(`getting vote power ${votePower}`); // is zero after ??
+    // return parseFloat(ethers.utils.formatEther(votePower));
+    return 1;
   }
 }
